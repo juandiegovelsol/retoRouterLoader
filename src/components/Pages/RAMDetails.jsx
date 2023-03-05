@@ -12,14 +12,13 @@ const RAMDetails = () => {
   const { characters } = rickAndMorty || [];
   const { id, species, name, status, image, gender } = character || {};
 
-  const getData = async () => {
+  const getData = async (id) => {
     const data = await getOneCharacter(id);
     setCharacter(data);
   };
 
   useEffect(() => {
     const item = characters.find((item) => item.id.toString() === idParam);
-
     if (item) {
       setCharacter(item);
     } else {
@@ -27,16 +26,6 @@ const RAMDetails = () => {
     }
   }, []);
 
-  /*   const getOneCharacter = async (id) => {
-    const url = `https://rickandmortyapi.com/api/character/${id}`;
-    try {
-      const request = await fetch(url);
-      const data = await request.json();
-      setCharacter(data);
-    } catch (error) {
-      console.log(error);
-    }
-  }; */
   return (
     <RAMDetail
       id={id}
