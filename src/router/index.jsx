@@ -1,5 +1,10 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { RickAndMorty, Pokemon } from "../components/Pages";
+import {
+  RickAndMorty,
+  Pokemon,
+  RAMDetails,
+  PokDetails,
+} from "../components/Pages";
 
 const router = createBrowserRouter([
   {
@@ -14,6 +19,14 @@ const router = createBrowserRouter([
   {
     path: "/rickandmorty",
     element: <RickAndMorty />,
+  },
+  {
+    path: "/rickandmorty/:id",
+    element: <RAMDetails />,
+  },
+  {
+    path: "/pokemon/:id",
+    element: <PokDetails />,
   },
 ]);
 const CustomRouter = () => <RouterProvider router={router}></RouterProvider>;
