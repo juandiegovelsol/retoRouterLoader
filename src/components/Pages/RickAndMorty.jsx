@@ -3,53 +3,23 @@ import { Header } from "../Header";
 import { Footer } from "../Footer";
 import { CardList } from "../CardList";
 import { Loader } from "../Loader";
-
 import { Context } from "../../context";
-
 import { getAllCharacters } from "../../services/rickAndMortyAPI";
+import { useData } from "../hooks";
 
 const RickAndMorty = () => {
-  const [characters, setCharacters] = useState([]);
+  const { data: characters } = useData([], getAllCharacters);
   const [loader, setLoader] = useState(true);
-
   const context = useContext(Context);
 
-  /* const getAllCharacters = () => {
-  const url = "https://rickandmortyapi.com/api/character";
-  //promise
-  fetch(url)
-    //When resolved
-    .then((response) => response.json())
-
-    .then((data) => {
-      // this then is from the return
-      setCharacters(data.results);
-      context.rickAndMorty.characters = data.results;
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      context.rickAndMorty.characters = characters;
       context.redirectDetailsRoute = "/rickandmorty";
       setLoader(false);
-    })
-
-    .catch((error) => {
-      // When rejected
-      console.log("Error", error);
-    });
-}; */
-  const getData = async () => {
-    const data = await getAllCharacters();
-    setCharacters(data);
-    context.rickAndMorty.characters = data;
-    context.redirectDetailsRoute = "/rickandmorty";
-    setLoader(false);
-  };
-
-  //When rendered
-  useEffect(() => {
-    //simulates network delay
-    const timer = setTimeout(() => {
-      getData();
     }, 2000);
     return () => clearTimeout(timer);
-  }, []);
+  }, [characters]);
   return (
     <>
       <Header>Header</Header>
