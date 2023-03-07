@@ -1,11 +1,12 @@
 export const getOnePokemon = async (url) => {
   const response = await fetch(url);
   const data = await response.json();
-  const image = data.sprites.front_default;
-  const id = data.id;
-  const order = data.order;
-  const height = data.height;
-  return { image, id, order, height };
+  return data;
+};
+export const getOnePokemonWithId = async (id) => {
+  const url = `https://pokeapi.co/api/v2/pokemon/${id}`;
+  const data = await getOnePokemon(url);
+  return data;
 };
 
 export const getAllPokemons = async () => {
@@ -13,12 +14,14 @@ export const getAllPokemons = async () => {
   const url = "https://pokeapi.co/api/v2/pokemon";
   try {
     const response = await fetch(url);
-    const data = await response.json();
+    const datas = await response.json();
 
-    for (let i = 0; i < data.results.length; i++) {
-      const item = data.results[i];
-      const { image, id, order, height } = await getOnePokemon(item.url);
-      pokemons.push({ name: item.name, image, id, order, height });
+    for (let i = 0; i < datas.results.length; i++) {
+      const item = datas.results[i];
+      const data = await getOnePokemon(item.url);
+      const { name, sprites, id, order, height } = data || {};
+      const { front_default: image } = sprites || {};
+      pokemons.push({ name, image, id, order, height });
     }
 
     return pokemons;

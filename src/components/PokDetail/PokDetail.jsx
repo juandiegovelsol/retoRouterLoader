@@ -2,7 +2,7 @@ import React from "react";
 
 import "./pok-detail.scss";
 
-const PokDetail = ({ name, order, height, image }) => {
+const PokDetail = ({ name, id, order, height, image }) => {
   return (
     <div className="wrapper">
       <div className="pok-detail">
@@ -20,6 +20,10 @@ const PokDetail = ({ name, order, height, image }) => {
           <span>
             <strong> Height: </strong>
             {height}
+          </span>
+          <span>
+            <strong> Id: </strong>
+            {id}
           </span>
         </div>
       </div>

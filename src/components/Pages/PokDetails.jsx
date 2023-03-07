@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Context } from "../../context";
 import { PokDetail } from "../PokDetail";
+import { getOnePokemonWithId } from "../../services/pokemonAPI";
 
 const PokDetails = () => {
   const [character, setCharacter] = useState({});
@@ -9,17 +10,24 @@ const PokDetails = () => {
   const context = useContext(Context);
   const { pokemon } = context || {};
   const { characters } = pokemon || {};
-  const { name, order, height, image } = character || {};
 
-  const getOnePokemon = async (id) => {
-    let pokemon = {};
-    const url = `https://pokeapi.co/api/v2/pokemon/${id}`;
-    const response = await fetch(url);
-    const data = await response.json();
-    const image = data.sprites.front_default;
-    const { name, order, height } = data;
-    pokemon = { name, id, image, order, height };
-    setCharacter(pokemon);
+  const getImage = (character) => {
+    let image = "";
+    if (character.sprites) {
+      const { sprites } = character || {};
+      image = sprites.front_default;
+    } else {
+      image = character.image;
+    }
+    return image;
+  };
+
+  const image = getImage(character);
+  const { name, id, order, height } = character || {};
+
+  const getData = async (id) => {
+    const data = await getOnePokemonWithId(id);
+    setCharacter(data);
   };
 
   useEffect(() => {
@@ -27,11 +35,19 @@ const PokDetails = () => {
     if (item) {
       setCharacter(item);
     } else {
-      getOnePokemon(idParam);
+      getData(idParam);
     }
   }, []);
 
-  return <PokDetail name={name} order={order} height={height} image={image} />;
+  return (
+    <PokDetail
+      name={name}
+      id={id}
+      order={order}
+      height={height}
+      image={image}
+    />
+  );
 };
 
 export default PokDetails;
