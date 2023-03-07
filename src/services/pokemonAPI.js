@@ -1,8 +1,13 @@
 export const getOnePokemon = async (url) => {
-  const response = await fetch(url);
-  const data = await response.json();
-  return data;
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    return error;
+  }
 };
+
 export const getOnePokemonWithId = async (id) => {
   const url = `https://pokeapi.co/api/v2/pokemon/${id}`;
   const data = await getOnePokemon(url);

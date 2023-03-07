@@ -5,27 +5,21 @@ import { CardList } from "../CardList";
 import { Loader } from "../Loader";
 import { Context } from "../../context";
 import { getAllPokemons } from "../../services/pokemonAPI";
+import { useData } from "../hooks";
 
 const Pokemon = () => {
-  const [characters, setCharacters] = useState([]);
+  const { data: characters } = useData([], getAllPokemons);
   const [loader, setLoader] = useState(true);
   const context = useContext(Context);
 
-  const getPokemons = async () => {
-    const pokemons = await getAllPokemons();
-    setLoader(false);
-    setCharacters(pokemons);
-    context.pokemon.characters = pokemons;
-    context.redirectDetailsRoute = "/pokemon";
-  };
-
   useEffect(() => {
-    //simulates network delay
     const timer = setTimeout(() => {
-      getPokemons();
+      context.pokemon.characters = characters;
+      context.redirectDetailsRoute = "/pokemon";
+      setLoader(false);
     }, 2000);
     return () => clearTimeout(timer);
-  }, []);
+  }, [characters]);
 
   return (
     <>
