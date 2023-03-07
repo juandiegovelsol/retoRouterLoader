@@ -1,17 +1,23 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Header } from "../Header";
 import { Footer } from "../Footer";
 import { CardList } from "../CardList";
 import { Loader } from "../Loader";
+import { Context } from "../../context";
 
 const Pokemon = () => {
   const [characters, setCharacters] = useState([]);
   const [loader, setLoader] = useState(true);
+  const context = useContext(Context);
 
   const getOnePokemon = async (url) => {
     const response = await fetch(url);
     const data = await response.json();
-    return data.sprites.front_default;
+    const image = data.sprites.front_default;
+    const id = data.id;
+    const order = data.order;
+    const height = data.height;
+    return { image, id, order, height };
   };
   //Async/await
   const getAllPokemons = async () => {
@@ -23,9 +29,8 @@ const Pokemon = () => {
 
     for (let i = 0; i < data.results.length; i++) {
       const item = data.results[i];
-      const image = await getOnePokemon(item.url);
-      pokemons.push({ name: item.name, image });
-      setTimeout(() => {}, 100);
+      const { image, id, order, height } = await getOnePokemon(item.url);
+      pokemons.push({ name: item.name, image, id, order, height });
     }
 
     //For in utiliza el indice para recorrer el arreglo
@@ -42,9 +47,11 @@ const Pokemon = () => {
       pokemons.push({ name: item.name, image });
     } */
 
-    console.log("Pokemons", pokemons);
+    /* console.log("Pokemons", pokemons); */
     setLoader(false);
     setCharacters(pokemons);
+    context.pokemon.characters = pokemons;
+    context.redirectDetailsRoute = "/pokemon";
   };
 
   useEffect(() => {
@@ -59,7 +66,7 @@ const Pokemon = () => {
     <>
       <Header>Header</Header>
       {loader && <Loader />}
-      <CardList list={characters} />
+      {!loader && <CardList list={characters} />}
       <Footer>Footer</Footer>
     </>
   );
