@@ -3,28 +3,25 @@ import { useParams } from "react-router-dom";
 import { Context } from "../../context";
 import { RAMDetail } from "../RAMDetail";
 import { getOneCharacter } from "../../services/rickAndMortyAPI";
+import { useData } from "../hooks";
 
 const RAMDetails = () => {
   const [character, setCharacter] = useState({});
   const { id: idParam } = useParams();
+  const { data: otherCharacter } = useData([], getOneCharacter, idParam);
   const context = useContext(Context);
   const { rickAndMorty } = context || {};
   const { characters } = rickAndMorty || [];
   const { id, species, name, status, image, gender } = character || {};
-
-  const getData = async (id) => {
-    const data = await getOneCharacter(id);
-    setCharacter(data);
-  };
 
   useEffect(() => {
     const item = characters.find((item) => item.id.toString() === idParam);
     if (item) {
       setCharacter(item);
     } else {
-      getData(idParam);
+      setCharacter(otherCharacter);
     }
-  }, []);
+  }, [otherCharacter]);
 
   return (
     <RAMDetail

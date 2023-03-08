@@ -3,10 +3,12 @@ import { useParams } from "react-router-dom";
 import { Context } from "../../context";
 import { PokDetail } from "../PokDetail";
 import { getOnePokemonWithId } from "../../services/pokemonAPI";
+import { useData } from "../hooks";
 
 const PokDetails = () => {
   const [character, setCharacter] = useState({});
   const { id: idParam } = useParams();
+  const { data: otherCharacter } = useData([], getOnePokemonWithId, idParam);
   const context = useContext(Context);
   const { pokemon } = context || {};
   const { characters } = pokemon || {};
@@ -21,23 +23,17 @@ const PokDetails = () => {
     }
     return image;
   };
-
   const image = getImage(character);
   const { name, id, order, height } = character || {};
-
-  const getData = async (id) => {
-    const data = await getOnePokemonWithId(id);
-    setCharacter(data);
-  };
 
   useEffect(() => {
     const item = characters.find((item) => item.id.toString() === idParam);
     if (item) {
       setCharacter(item);
     } else {
-      getData(idParam);
+      setCharacter(otherCharacter);
     }
-  }, []);
+  }, [otherCharacter]);
 
   return (
     <PokDetail
